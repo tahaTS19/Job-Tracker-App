@@ -1,0 +1,192 @@
+/* DashboardPage.module.css */
+
+.page {
+  min-height: 100vh;
+  background: var(--bg-base);
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.main {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+}
+
+/* ─── Toolbar ────────────────────────────────────────────── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.searchWrap {
+  flex: 1;
+  min-width: 180px;
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 9px 36px 9px 38px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  transition: var(--transition);
+}
+
+.searchInput:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+.searchInput::placeholder { color: var(--text-muted); }
+
+.clearSearch {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+}
+
+.clearSearch:hover { color: var(--text-primary); }
+
+/* ─── Filter tabs ────────────────────────────────────────── */
+.filterTabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+.filterTab {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.filterTab:hover {
+  border-color: var(--brand-muted);
+  color: var(--brand-primary);
+  background: var(--brand-light);
+}
+
+.activeTab {
+  background: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
+  color: #fff !important;
+  font-weight: 500;
+}
+
+/* ─── Add button ─────────────────────────────────────────── */
+.addBtn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 20px;
+  border-radius: var(--radius-sm);
+  background: var(--brand-primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.addBtn:hover {
+  background: var(--brand-primary-hover);
+  transform: translateY(-1px);
+}
+
+.addBtn:active { transform: scale(0.97); }
+
+/* ─── Jobs list ──────────────────────────────────────────── */
+.listWrap { min-height: 200px; }
+
+.jobsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ─── Mobile ─────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .main {
+    padding: 14px 12px 80px;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .searchWrap {
+    min-width: unset;
+    width: 100%;
+  }
+
+  /* font-size 16px stops iOS from zooming on input focus */
+  .searchInput {
+    font-size: 16px;
+    padding: 10px 36px 10px 38px;
+  }
+
+  .filterTabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .filterTab {
+    flex-shrink: unset;
+    padding: 8px 6px;
+    font-size: 12px;
+    border-radius: 99px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .addBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .jobsList { gap: 8px; }
+}
