@@ -2,8 +2,8 @@ import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
 import dotenv from "dotenv"
-import authRoutes from "./routes/auth.js"
-import jobRoutes from "./routes/jobs.js"
+import authRoutes from "./routes/authRoutes.js"
+import jobRoutes from "./routes/jobRoutes.js"
 
 dotenv.config()
 
