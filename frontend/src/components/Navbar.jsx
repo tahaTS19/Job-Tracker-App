@@ -1,13 +1,8 @@
-// ============================================================
-// components/Navbar.jsx — Sticky top navigation bar
-// Shows brand logo, user greeting, dark mode toggle, logout
-// ============================================================
-
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import styles from "./Navbar.module.css";
 
-// ─── Sun icon (light mode) ────────────────────────────────────
+//Sun icon (light mode)
 const SunIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <circle cx="12" cy="12" r="5" />
@@ -22,7 +17,7 @@ const SunIcon = () => (
   </svg>
 );
 
-// ─── Moon icon (dark mode) ────────────────────────────────────
+//Moon icon (dark mode)
 const MoonIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -32,7 +27,7 @@ const MoonIcon = () => (
 export default function Navbar() {
   const { user, logout } = useAuth();
 
-  // ─── Dark mode — persisted in localStorage ─────────────────
+  //Dark mode — persisted in localStorage
   const [dark, setDark] = useState(() => {
     return localStorage.getItem("jf_theme") === "dark";
   });
@@ -51,7 +46,7 @@ export default function Navbar() {
 
   const toggleTheme = () => setDark((d) => !d);
 
-  // ─── Extract first name for greeting ───────────────────────
+  //Extract first name for greeting
   const firstName = user?.name?.split(" ")[0] || "there";
 
   return (
@@ -67,7 +62,7 @@ export default function Navbar() {
         <div className={styles.right}>
           {/* Greeting */}
           <span className={styles.greeting}>
-            Hi, {firstName} 👋
+            Hi, {firstName}
           </span>
 
           {/* Dark mode toggle */}
