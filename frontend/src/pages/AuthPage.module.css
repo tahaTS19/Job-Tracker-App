@@ -1,0 +1,186 @@
+/* AuthPage.module.css */
+
+.page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: var(--bg-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.blob1 {
+  position: absolute;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  opacity: 0.08;
+  top: -100px; right: -60px;
+  pointer-events: none;
+}
+
+.blob2 {
+  position: absolute;
+  width: 240px; height: 240px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.07;
+  bottom: -70px; left: -50px;
+  pointer-events: none;
+}
+
+.card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  z-index: 1;
+}
+
+.logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+
+.logoMark {
+  width: 40px; height: 40px;
+  background: var(--brand-primary);
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800; font-size: 15px; color: #fff;
+}
+
+.logo span {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 20px;
+  color: var(--text-primary);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 26px; font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+.form { display: flex; flex-direction: column; }
+
+.form .field { margin-bottom: 16px; }
+
+.form label {
+  display: block;
+  font-size: 13px; font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.form input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  outline: none;
+  transition: var(--transition);
+}
+
+.form input:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+.form input::placeholder { color: var(--text-muted); }
+
+.inputError { border-color: #dc2626 !important; }
+.errorMsg { display: block; font-size: 12px; color: #dc2626; margin-top: 4px; }
+.errorBanner {
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--brand-primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 15px; font-weight: 500;
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: var(--transition);
+  margin-top: 4px;
+}
+
+.submitBtn:hover:not(:disabled) { background: var(--brand-primary-hover); }
+.submitBtn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+.btnSpinner {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+}
+
+.switchLink {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.switchLink a {
+  color: var(--brand-primary);
+  font-weight: 500;
+}
+
+.switchLink a:hover { text-decoration: underline; }
+
+/* ─── Mobile ─────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .page {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .blob1, .blob2 { display: none; }
+
+  .card {
+    padding: 36px 22px 32px;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .title { font-size: 24px; }
+
+  /* 16px stops iOS zoom on focus */
+  .form input { font-size: 16px; }
+  .submitBtn { padding: 14px; font-size: 16px; }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }

@@ -1,0 +1,53 @@
+/* LoadingScreen.module.css */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: var(--bg-base);
+  gap: 24px;
+}
+
+/* Pulsing logo mark */
+.logoMark {
+  width: 64px;
+  height: 64px;
+  background: var(--brand-primary);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.logoMark span {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+  color: white;
+  letter-spacing: -0.5px;
+}
+
+/* Three bouncing dots */
+.dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dots span {
+  width: 8px;
+  height: 8px;
+  background: var(--brand-muted);
+  border-radius: 50%;
+  animation: bounce 1.2s ease-in-out infinite;
+}
+
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-10px); opacity: 1; }
+}
