@@ -1,0 +1,131 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Light Mode ─────────────────────────────────────────── */
+:root {
+  --bg-base: #f7f6f3;
+  --bg-surface: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-hover: #f0eeeb;
+  --brand-primary: #3d7a5f;
+  --brand-primary-hover: #2e6350;
+  --brand-light: #e8f2ed;
+  --brand-muted: #a8c9b8;
+  --accent: #d4813a;
+  --accent-light: #fdf3e7;
+  --text-primary: #1a1a1a;
+  --text-secondary: #5a5a5a;
+  --text-muted: #9a9a9a;
+  --text-inverse: #ffffff;
+  --border: #e4e2de;
+  --border2: #d0cdc7;
+  --border-focus: #3d7a5f;
+  --status-wishlist: #8b7cf6;
+  --status-wishlist-bg: #f0edff;
+  --status-applied: #3d7a5f;
+  --status-applied-bg: #e8f2ed;
+  --status-interview: #d4813a;
+  --status-interview-bg: #fdf3e7;
+  --status-offer: #2563eb;
+  --status-offer-bg: #eff6ff;
+  --status-rejected: #dc2626;
+  --status-rejected-bg: #fef2f2;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.10);
+  --shadow-hover: 0 8px 24px rgba(61,122,95,0.15);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Dark Mode ──────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg-base: #111613;
+  --bg-surface: #1a201c;
+  --bg-elevated: #222c26;
+  --bg-hover: #2a312c;
+  --brand-primary: #5ca882;
+  --brand-primary-hover: #6dbf95;
+  --brand-light: #1b2e24;
+  --brand-muted: #3d6e54;
+  --accent: #e8a060;
+  --accent-light: #2a2015;
+  --text-primary: #edeae4;
+  --text-secondary: #a0a099;
+  --text-muted: #606059;
+  --text-inverse: #111613;
+  --border: #2c352f;
+  --border2: #3a4540;
+  --status-wishlist: #a590f8;
+  --status-wishlist-bg: #1e1830;
+  --status-applied: #5ca882;
+  --status-applied-bg: #1a2e24;
+  --status-interview: #e8a060;
+  --status-interview-bg: #2a2015;
+  --status-offer: #60a5fa;
+  --status-offer-bg: #182035;
+  --status-rejected: #f87171;
+  --status-rejected-bg: #2a1515;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.35);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.5);
+  --shadow-hover: 0 8px 24px rgba(92,168,130,0.2);
+}
+
+/* ─── Base ───────────────────────────────────────────────── */
+html {
+  font-size: 16px;
+  /* Prevent any horizontal overflow at the root */
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  /* Hard stop — nothing escapes the screen */
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+a {
+  color: var(--brand-primary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+a:hover { color: var(--brand-primary-hover); }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+::selection { background: var(--brand-light); color: var(--brand-primary); }
+
+/* ─── Animations ─────────────────────────────────────────── */
+@keyframes fadeIn  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes spin    { to { transform: rotate(360deg); } }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.fade-in  { animation: fadeIn  0.35s cubic-bezier(0.4,0,0.2,1) both; }
+.scale-in { animation: scaleIn 0.3s  cubic-bezier(0.4,0,0.2,1) both; }
