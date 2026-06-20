@@ -9,9 +9,15 @@
 }
 
 .icon {
-  font-size: 52px;
-  margin-bottom: 18px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: var(--brand-light);
+  color: var(--brand-primary);
 }
 
 .title {

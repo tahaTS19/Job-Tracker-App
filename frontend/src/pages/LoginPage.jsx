@@ -1,8 +1,3 @@
-// ============================================================
-// pages/LoginPage.jsx — Login form with validation
-// Redirects to /dashboard on success
-// ============================================================
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -13,20 +8,16 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // ─── Form State ───────────────────────────────────────────
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // ─── Field Change Handler ─────────────────────────────────
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    // Clear field error on change
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  // ─── Client-side Validation ───────────────────────────────
   const validate = () => {
     const newErrors = {};
     if (!form.email) newErrors.email = "Email is required";
@@ -36,7 +27,6 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ─── Submit Handler ───────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -44,7 +34,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(form.email, form.password);
-      toast.success("Welcome back! 👋");
+      toast.success("Welcome back");
       navigate("/dashboard");
     } catch (err) {
       const msg = err.response?.data?.message || "Login failed. Please try again.";
@@ -56,12 +46,10 @@ export default function LoginPage() {
 
   return (
     <div className={styles.page}>
-      {/* Decorative background blobs */}
       <div className={styles.blob1} />
       <div className={styles.blob2} />
 
-      <div className={styles.card + " scale-in"}>
-        {/* Logo */}
+      <div className={`${styles.card} scale-in`}>
         <div className={styles.logo}>
           <div className={styles.logoMark}>JF</div>
           <span>JobFlow</span>
@@ -70,9 +58,8 @@ export default function LoginPage() {
         <h1 className={styles.title}>Welcome back</h1>
         <p className={styles.subtitle}>Sign in to continue tracking your applications</p>
 
-        {/* Login Form */}
         <form onSubmit={handleSubmit} className={styles.form} noValidate>
-          <div className={styles.field}>
+          <div className="field">
             <label htmlFor="email">Email</label>
             <input
               id="email"
@@ -87,7 +74,7 @@ export default function LoginPage() {
             {errors.email && <span className={styles.errorMsg}>{errors.email}</span>}
           </div>
 
-          <div className={styles.field}>
+          <div className="field">
             <label htmlFor="password">Password</label>
             <input
               id="password"
@@ -103,17 +90,12 @@ export default function LoginPage() {
           </div>
 
           <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? (
-              <span className={styles.btnSpinner} />
-            ) : (
-              "Sign In"
-            )}
+            {loading ? <span className={styles.btnSpinner} /> : "Sign In"}
           </button>
         </form>
 
         <p className={styles.switchLink}>
-          Don't have an account?{" "}
-          <Link to="/register">Create one →</Link>
+          Don't have an account? <Link to="/register">Create one</Link>
         </p>
       </div>
     </div>

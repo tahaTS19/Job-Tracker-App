@@ -1,9 +1,3 @@
-// ============================================================
-// pages/DashboardPage.jsx — Main dashboard
-// Shows stats bar, toolbar (search + filters), job list
-// Manages modal state for add/edit/delete
-// ============================================================
-
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
@@ -16,7 +10,6 @@ import EmptyState from "../components/EmptyState";
 import SkeletonCard from "../components/SkeletonCard";
 import styles from "./DashboardPage.module.css";
 
-// ─── Status filter options ────────────────────────────────────
 const FILTER_OPTIONS = [
   { value: "all", label: "All" },
   { value: "wishlist", label: "Wishlist" },
@@ -29,21 +22,19 @@ const FILTER_OPTIONS = [
 export default function DashboardPage() {
   const { api } = useAuth();
 
-  // ─── Data state ─────────────────────────────────────────────
   const [jobs, setJobs] = useState([]);
   const [stats, setStats] = useState({ total: 0, wishlist: 0, applied: 0, interview: 0, offer: 0, rejected: 0 });
   const [loadingJobs, setLoadingJobs] = useState(true);
 
-  // ─── Filter / search state ───────────────────────────────────
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
 
-  // ─── Modal state ─────────────────────────────────────────────
-  const [modal, setModal] = useState(null); // null | "add" | "edit" | "delete"
-  const [activeJob, setActiveJob] = useState(null); // job being edited or deleted
+  const [modal, setModal] = useState(null);
+  const [activeJob, setActiveJob] = useState(null);
   const [saving, setSaving] = useState(false);
 
-  // ─── Fetch jobs (with filter & search) ──────────────────────
+  const [draftForm, setDraftForm] = useState(null);
+
   const fetchJobs = useCallback(async () => {
     try {
       const params = new URLSearchParams();
@@ -57,18 +48,15 @@ export default function DashboardPage() {
     }
   }, [filter, search, api]);
 
-  // ─── Fetch stats for the stats bar ──────────────────────────
   const fetchStats = useCallback(async () => {
     try {
       const { data } = await api.get("/jobs/stats");
       setStats({ ...data.stats, total: data.total });
     } catch (err) {
-      // Non-critical — stats still show 0
       console.error("Stats fetch failed:", err.message);
     }
   }, [api]);
 
-  // ─── Load everything on mount ────────────────────────────────
   useEffect(() => {
     const load = async () => {
       setLoadingJobs(true);
@@ -78,28 +66,18 @@ export default function DashboardPage() {
     load();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ─── Re-fetch jobs when filter changes ──────────────────────
   useEffect(() => {
     fetchJobs();
   }, [filter]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ─── Debounced search re-fetch ───────────────────────────────
   useEffect(() => {
     const timer = setTimeout(() => fetchJobs(), 320);
     return () => clearTimeout(timer);
   }, [search]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ─── Draft form state — persists across modal close/reopen ──
-  // This is the key fix: form lives in DashboardPage, not JobModal
-  // So accidental modal close doesn't wipe what the user typed
-  const [draftForm, setDraftForm] = useState(null);
-
-  // ─── Open "add job" modal ────────────────────────────────────
   const openAddModal = () => {
     setActiveJob(null);
     setModal("add");
-    // Only reset draft if there's no existing draft
-    // This way accidental close doesn't lose filled fields
     if (!draftForm) {
       setDraftForm({
         company: "", position: "", status: "applied",
@@ -109,13 +87,11 @@ export default function DashboardPage() {
     }
   };
 
-  // ─── Open "edit job" modal ───────────────────────────────────
   const openEditModal = (job) => {
     setActiveJob(job);
     setModal("edit");
   };
 
-  // ─── Open delete confirmation modal ─────────────────────────
   const openDeleteModal = (job) => {
     setActiveJob(job);
     setModal("delete");
@@ -124,25 +100,21 @@ export default function DashboardPage() {
   const closeModal = () => {
     setModal(null);
     setActiveJob(null);
-    // NOTE: intentionally do NOT clear draftForm here
-    // so accidental close preserves filled fields
   };
 
-  // ─── Clear draft completely (used when user clicks Cancel or saves) ──
   const clearDraft = () => setDraftForm(null);
 
-  // ─── Save (create or update) job ─────────────────────────────
   const handleSave = async (formData) => {
     setSaving(true);
     try {
       if (modal === "edit" && activeJob) {
         await api.put(`/jobs/${activeJob._id}`, formData);
-        toast.success("Job updated ✓");
+        toast.success("Job updated");
       } else {
         await api.post("/jobs", formData);
-        toast.success("Job added! Keep going 🚀");
+        toast.success("Job added");
       }
-      clearDraft(); // Wipe draft only after successful save
+      clearDraft();
       closeModal();
       await Promise.all([fetchJobs(), fetchStats()]);
     } catch (err) {
@@ -153,7 +125,6 @@ export default function DashboardPage() {
     }
   };
 
-  // ─── Delete job ──────────────────────────────────────────────
   const handleDelete = async () => {
     if (!activeJob) return;
     setSaving(true);
@@ -171,16 +142,12 @@ export default function DashboardPage() {
 
   return (
     <div className={styles.page}>
-      {/* Sticky top navigation bar */}
       <Navbar />
 
       <main className={styles.main}>
-        {/* Stats overview row */}
         <StatsBar stats={stats} />
 
-        {/* ─── Toolbar: search + status filters + add button ─── */}
         <div className={styles.toolbar}>
-          {/* Search input */}
           <div className={styles.searchWrap}>
             <svg className={styles.searchIcon} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />
@@ -189,17 +156,15 @@ export default function DashboardPage() {
             <input
               className={styles.searchInput}
               type="text"
-              placeholder="Search company or position…"
+              placeholder="Search company or position..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            {/* Clear search button */}
             {search && (
               <button className={styles.clearSearch} onClick={() => setSearch("")}>×</button>
             )}
           </div>
 
-          {/* Status filter tabs */}
           <div className={styles.filterTabs}>
             {FILTER_OPTIONS.map((opt) => (
               <button
@@ -212,7 +177,6 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          {/* Add job button */}
           <button className={styles.addBtn} onClick={openAddModal}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M12 5v14M5 12h14" />
@@ -221,23 +185,19 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {/* ─── Job list ────────────────────────────────────────── */}
         <div className={styles.listWrap}>
           {loadingJobs ? (
-            // Skeleton loading state — 4 placeholder cards
             <>
               {[...Array(4)].map((_, i) => (
                 <SkeletonCard key={i} delay={i * 80} />
               ))}
             </>
           ) : jobs.length === 0 ? (
-            // Empty state
             <EmptyState
               hasSearch={!!search || filter !== "all"}
               onAdd={openAddModal}
             />
           ) : (
-            // Actual job cards
             <div className={styles.jobsList}>
               {jobs.map((job, index) => (
                 <JobCard
@@ -253,7 +213,6 @@ export default function DashboardPage() {
         </div>
       </main>
 
-      {/* ─── Add / Edit modal ──────────────────────────────── */}
       {(modal === "add" || modal === "edit") && (
         <JobModal
           mode={modal}
@@ -267,7 +226,6 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* ─── Delete confirmation modal ──────────────────────── */}
       {modal === "delete" && (
         <DeleteModal
           job={activeJob}

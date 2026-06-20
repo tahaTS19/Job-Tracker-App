@@ -1,8 +1,3 @@
-// ============================================================
-// pages/RegisterPage.jsx — Registration form
-// Validates name, email, password then calls AuthContext.register()
-// ============================================================
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -13,13 +8,11 @@ export default function RegisterPage() {
   const navigate = useNavigate();
   const { register } = useAuth();
 
-  // ─── Form state ────────────────────────────────────────────
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
 
-  // ─── Field change handler ──────────────────────────────────
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -27,7 +20,6 @@ export default function RegisterPage() {
     setGeneralError("");
   };
 
-  // ─── Client-side validation ────────────────────────────────
   const validate = () => {
     const newErrors = {};
     if (!form.name.trim()) newErrors.name = "Name is required";
@@ -40,7 +32,6 @@ export default function RegisterPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ─── Submit handler ────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -49,7 +40,7 @@ export default function RegisterPage() {
     setGeneralError("");
     try {
       await register(form.name.trim(), form.email.trim(), form.password);
-      toast.success(`Welcome aboard, ${form.name.split(" ")[0]}! 🎉`);
+      toast.success(`Welcome aboard, ${form.name.split(" ")[0]}`);
       navigate("/dashboard");
     } catch (err) {
       const msg = err.response?.data?.message || err.message || "Registration failed. Please try again.";
@@ -61,12 +52,10 @@ export default function RegisterPage() {
 
   return (
     <div className={styles.page}>
-      {/* Decorative background blobs */}
       <div className={styles.blob1} />
       <div className={styles.blob2} />
 
       <div className={`${styles.card} scale-in`}>
-        {/* Brand logo */}
         <div className={styles.logo}>
           <div className={styles.logoMark}>JF</div>
           <span>JobFlow</span>
@@ -77,13 +66,11 @@ export default function RegisterPage() {
           Start tracking your job hunt — organized and stress-free
         </p>
 
-        {/* General API error banner */}
         {generalError && (
           <div className={styles.errorBanner}>{generalError}</div>
         )}
 
         <form onSubmit={handleSubmit} className={styles.form} noValidate>
-          {/* Name field */}
           <div className="field">
             <label htmlFor="name">Full Name</label>
             <input
@@ -100,7 +87,6 @@ export default function RegisterPage() {
             {errors.name && <span className={styles.errorMsg}>{errors.name}</span>}
           </div>
 
-          {/* Email field */}
           <div className="field">
             <label htmlFor="email">Email</label>
             <input
@@ -116,7 +102,6 @@ export default function RegisterPage() {
             {errors.email && <span className={styles.errorMsg}>{errors.email}</span>}
           </div>
 
-          {/* Password field */}
           <div className="field">
             <label htmlFor="password">
               Password{" "}
@@ -143,8 +128,7 @@ export default function RegisterPage() {
         </form>
 
         <p className={styles.switchLink}>
-          Already have an account?{" "}
-          <Link to="/login">Sign in →</Link>
+          Already have an account? <Link to="/login">Sign in</Link>
         </p>
       </div>
     </div>
