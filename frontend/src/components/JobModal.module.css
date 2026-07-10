@@ -1,0 +1,253 @@
+/* JobModal.module.css */
+
+/* ─── Overlay — covers full screen ──────────────────────── */
+.overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 16px;
+  animation: fadeIn 0.2s ease both;
+}
+
+[data-theme="dark"] .overlay { background: rgba(0,0,0,0.65); }
+
+/* ─── Modal box ──────────────────────────────────────────── */
+.modal {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  /* Never wider than screen minus padding */
+  width: 100%;
+  max-width: 500px;
+  /* Never taller than viewport */
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  animation: scaleIn 0.25s cubic-bezier(0.4,0,0.2,1) both;
+  box-shadow: var(--shadow-lg);
+}
+
+/* ─── Header ─────────────────────────────────────────────── */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg-surface);
+  z-index: 1;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.closeBtn {
+  width: 30px; height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.closeBtn:hover { background: var(--bg-hover); }
+
+/* ─── Body ───────────────────────────────────────────────── */
+.body {
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.full { grid-template-columns: 1fr; }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  resize: vertical;
+  transition: var(--transition);
+  /* Prevent inputs from overflowing their column */
+  min-width: 0;
+  max-width: 100%;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+.field input::placeholder,
+.field textarea::placeholder { color: var(--text-muted); }
+
+.field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239a9a96' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+  cursor: pointer;
+}
+
+.inputErr { border-color: #dc2626 !important; }
+.inputErr:focus { box-shadow: 0 0 0 3px rgba(220,38,38,0.1) !important; }
+.fieldErr { font-size: 12px; color: #dc2626; }
+
+/* ─── Footer ─────────────────────────────────────────────── */
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 22px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.cancelBtn {
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.cancelBtn:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+.saveBtn {
+  padding: 9px 20px;
+  border-radius: var(--radius-sm);
+  background: var(--brand-primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  min-width: 100px;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.saveBtn:hover:not(:disabled) { background: var(--brand-primary-hover); }
+.saveBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ─── Mobile — bottom sheet style ───────────────────────── */
+@media (max-width: 560px) {
+  /* Full screen overlay, no side padding */
+  .overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    /* Take up to 90% of screen height */
+    max-height: 90vh;
+    max-height: 90dvh;
+    border-radius: 18px 18px 0 0;
+    border-bottom: none;
+  }
+
+  /* Drag handle */
+  .modal::before {
+    content: "";
+    display: block;
+    width: 32px;
+    height: 4px;
+    background: var(--border2);
+    border-radius: 99px;
+    margin: 10px auto 2px;
+  }
+
+  .head {
+    padding: 12px 18px 14px;
+  }
+
+  .title { font-size: 16px; }
+
+  .body {
+    padding: 14px 18px;
+    gap: 12px;
+  }
+
+  /* Single column on mobile */
+  .row { grid-template-columns: 1fr; gap: 12px; }
+
+  /* Bigger font stops iOS zoom on tap */
+  .field input,
+  .field select,
+  .field textarea {
+    font-size: 16px;
+    padding: 11px 12px;
+  }
+
+  .foot {
+    padding: 12px 18px 24px;
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .cancelBtn,
+  .saveBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 13px;
+    font-size: 15px;
+    min-width: unset;
+  }
+}
+
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes spin    { to { transform: rotate(360deg); } }
