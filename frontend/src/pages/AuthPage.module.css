@@ -158,29 +158,63 @@
 
 .switchLink a:hover { text-decoration: underline; }
 
+/* ─── Password field with show/hide toggle ───────────────── */
+.passwordWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordWrap input {
+  padding-right: 42px;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: var(--transition);
+  border-radius: 4px;
+}
+
+.eyeBtn:hover {
+  color: var(--text-primary);
+}
+
 /* ─── Mobile ─────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .page {
     padding: 0;
-    align-items: stretch;
+    align-items: flex-start;
+    background: var(--bg-surface); /* match card so no gap shows */
   }
 
   .blob1, .blob2 { display: none; }
 
   .card {
-    padding: 36px 22px 32px;
+    padding: 48px 24px 40px;
     border-radius: 0;
     border: none;
     box-shadow: none;
+    width: 100%;
     min-height: 100vh;
     min-height: 100dvh;
   }
 
-  .title { font-size: 24px; }
+  .title { font-size: 26px; }
+  .subtitle { font-size: 13px; }
 
-  /* 16px stops iOS zoom on focus */
   .form input { font-size: 16px; }
-  .submitBtn { padding: 14px; font-size: 16px; }
+  .submitBtn { padding: 14px; font-size: 16px; margin-top: 8px; }
+
+  .switchLink { margin-top: 28px; }
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }

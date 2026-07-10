@@ -1,11 +1,22 @@
+// ============================================================
+// context/AuthContext.jsx — Global Authentication State
+// Provides: user, token, login(), register(), logout()
+//
+// Security measures:
+// 1. Auto-logout after 30 minutes of inactivity
+// 2. JWT expiry check on every app load
+// 3. Global 401 handler — skips auth routes (login/register)
+//    so invalid credentials don't trigger "session expired" toast
+// ============================================================
+
 import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
 import toast from "react-hot-toast";
 
 const AuthContext = createContext(null);
 
-// How long a user can be inactive before being auto logged out (ms)
-const INACTIVITY_LIMIT = 5 * 60 * 1000; // 5 minutes
+const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes
 
+// Set by AuthProvider — only fires when user is already logged in
 let onUnauthorized = null;
 
 const api = {
@@ -21,8 +32,11 @@ const api = {
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
 
-    // Server rejected the token = force logout immediately
-    if (res.status === 401 && onUnauthorized) {
+    // Skip 401 handling for login/register — they legitimately
+    // return 401 for wrong credentials. Only force logout for
+    // protected routes where an invalid token is the real issue.
+    const isAuthRoute = path.startsWith("/auth/");
+    if (res.status === 401 && onUnauthorized && !isAuthRoute) {
       onUnauthorized();
     }
 
@@ -43,11 +57,10 @@ const api = {
   delete(path)     { return this.request("DELETE", path);       },
 };
 
-
 function decodeTokenExpiry(token) {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.exp ? payload.exp * 1000 : null; // exp is in seconds
+    return payload.exp ? payload.exp * 1000 : null;
   } catch {
     return null;
   }
@@ -57,11 +70,8 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // Tracks the inactivity timer so it can be cleared/reset
   const inactivityTimer = useRef(null);
 
-  //Logout
   const logout = useCallback((reason) => {
     localStorage.removeItem("jf_token");
     localStorage.removeItem("jf_user");
@@ -78,8 +88,6 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  //Reset the inactivity timer
-  // Called on every user interaction (click, keypress, scroll)
   const resetInactivityTimer = useCallback(() => {
     if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
     inactivityTimer.current = setTimeout(() => {
@@ -87,16 +95,13 @@ export function AuthProvider({ children }) {
     }, INACTIVITY_LIMIT);
   }, [logout]);
 
-  //Restore session from localStorage on app load
   useEffect(() => {
     const storedToken = localStorage.getItem("jf_token");
     const storedUser = localStorage.getItem("jf_user");
 
     if (storedToken && storedUser) {
-      // Check if the token has already expired before trusting it
       const expiry = decodeTokenExpiry(storedToken);
       if (expiry && Date.now() > expiry) {
-        // Token expired while the app was closed = force logout
         localStorage.removeItem("jf_token");
         localStorage.removeItem("jf_user");
       } else {
@@ -107,13 +112,12 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  //Set up activity listeners for auto-logout
   useEffect(() => {
-    if (!token) return; // only track activity while logged in
+    if (!token) return;
 
     const events = ["mousedown", "keydown", "scroll", "touchstart"];
     events.forEach((evt) => window.addEventListener(evt, resetInactivityTimer));
-    resetInactivityTimer(); // start the timer immediately on login
+    resetInactivityTimer();
 
     return () => {
       events.forEach((evt) => window.removeEventListener(evt, resetInactivityTimer));
@@ -121,14 +125,11 @@ export function AuthProvider({ children }) {
     };
   }, [token, resetInactivityTimer]);
 
-  //Wire up global 401 handler
-  // When any API call gets a 401, force logout with "expired" reason
   useEffect(() => {
     onUnauthorized = () => logout("expired");
     return () => { onUnauthorized = null; };
   }, [logout]);
 
-  //Save auth state to localStorage
   const persistAuth = (newToken, newUser) => {
     localStorage.setItem("jf_token", newToken);
     localStorage.setItem("jf_user", JSON.stringify(newUser));
@@ -136,14 +137,12 @@ export function AuthProvider({ children }) {
     setUser(newUser);
   };
 
-  // Register
   const register = async (name, email, password) => {
     const { data } = await api.post("/auth/register", { name, email, password });
     persistAuth(data.token, data.user);
     return data;
   };
 
-  // Login
   const login = async (email, password) => {
     const { data } = await api.post("/auth/login", { email, password });
     persistAuth(data.token, data.user);
