@@ -75,9 +75,9 @@
   line-height: 1.5;
 }
 
-.form { display: flex; flex-direction: column; }
+.form { display: flex; flex-direction: column; gap: 14px; }
 
-.form .field { margin-bottom: 16px; }
+.form .field { margin-bottom: 0; }
 
 .form label {
   display: block;
