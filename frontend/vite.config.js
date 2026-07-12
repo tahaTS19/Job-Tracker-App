@@ -5,7 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    // Proxy API requests to backend — avoids CORS issues in development
+    // Proxy only works in local development
+    // In production, VITE_API_URL points to the Vercel backend
     proxy: {
       "/api": {
         target: "http://localhost:5000",

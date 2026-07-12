@@ -6,7 +6,6 @@
 // 1. Auto-logout after 30 minutes of inactivity
 // 2. JWT expiry check on every app load
 // 3. Global 401 handler — skips auth routes (login/register)
-//    so invalid credentials don't trigger "session expired" toast
 // ============================================================
 
 import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
@@ -16,14 +15,18 @@ const AuthContext = createContext(null);
 
 const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes
 
-// Set by AuthProvider — only fires when user is already logged in
+// ─── Backend URL ──────────────────────────────────────────────
+// In development, Vite proxy handles /api → localhost:5000
+// In production, calls go directly to the Vercel backend URL
+const BASE_URL = import.meta.env.VITE_API_URL || "";
+
 let onUnauthorized = null;
 
 const api = {
   async request(method, path, body) {
     const token = localStorage.getItem("jf_token");
 
-    const res = await fetch(`/api${path}`, {
+    const res = await fetch(`${BASE_URL}/api${path}`, {
       method,
       headers: {
         "Content-Type": "application/json",
@@ -32,9 +35,6 @@ const api = {
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
 
-    // Skip 401 handling for login/register — they legitimately
-    // return 401 for wrong credentials. Only force logout for
-    // protected routes where an invalid token is the real issue.
     const isAuthRoute = path.startsWith("/auth/");
     if (res.status === 401 && onUnauthorized && !isAuthRoute) {
       onUnauthorized();

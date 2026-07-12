@@ -10,9 +10,9 @@ dotenv.config()
 const app = express()
 
 // middleware
-app.use(express.json())
+app.use(express.json({ limit: "10mb" })) // increased for base64 images
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:3000"],
+  origin: process.env.CLIENT_URL || "*",
   credentials: true,
 }))
 
@@ -24,15 +24,27 @@ app.get("/", (req, res) => {
   res.json({ message: "server is running" })
 })
 
-const PORT = process.env.PORT || 5000
-const MONGO_URI = process.env.MONGO_URI
+// ─── Connect to MongoDB ───────────────────────────────────────
+// In serverless, we reuse existing connection if available
+// instead of creating a new one on every request
+let isConnected = false
 
-mongoose.connect(MONGO_URI)
-  .then(() => {
-    console.log("db connected successfully")
-    app.listen(PORT, () => console.log(`Server started on PORT: ${PORT}`))
+const connectDB = async () => {
+  if (isConnected) return
+  await mongoose.connect(process.env.MONGO_URI)
+  isConnected = true
+  console.log("db connected")
+}
+
+// For local development — start the server normally
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000
+  connectDB().then(() => {
+    app.listen(PORT, () => console.log(`running on port ${PORT}`))
   })
-  .catch((err) => {
-    console.log("db connection failed", err.message)
-    process.exit(1)
-  })
+}
+
+// For Vercel — connect on each cold start then export
+connectDB()
+
+export default app
